@@ -4,7 +4,8 @@ const { postStripeData } = require('./stripeFuncs')
 
 const router = express.Router()
 
-router.get('/', (req, res) => res.status(200).json({ msg: 'server' }))
+//router.get('/', (req, res) => res.status(200).json({ msg: 'general server' }))
+router.get('/', (req, res) => res.status(200).json({ msg: 'api server' }))
 
 router.post('/userStripeData', postStripeData)
 
