@@ -13,10 +13,13 @@ const postStripeData = async (req, res) => {
     })
     if (paymentIntent !== null) {
       const clientSecret = paymentIntent.client_secret
-      if (clientSecret !== null) {
-        res.status(200).json({ clientSecret })
+      const paymentIntent = await stripe.paymentIntents.confirm(`${clientSecret}`, {
+        payment_method: 'pm_card_visa',
+      })
+      if (paymentIntent !== null) {
+        res.status(200).json({ paymentIntent })
       } else {
-        res.status(400).json({ msg: 'error from post stripe data' })
+        res.status(400).json({ msg: 'error from payment confirmation' })
       }
     } else {
       req.status(400).json({ msg: 'error null payment Intent' })
