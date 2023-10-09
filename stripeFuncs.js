@@ -5,27 +5,21 @@ const stripe = require('stripe')(
 
 const postStripeData = async (req, res) => {
   const { amount, currency } = req.body
-  if (amount !== null && currency !== null) {
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount,
-      currency,
-      payment_method_types: ['card'],
-    })
-    if (paymentIntent !== null) {
-      const clientSecret = paymentIntent.client_secret
-      const paymentIntent = await stripe.paymentIntents.confirm(`${clientSecret}`, {
-        payment_method: 'pm_card_visa',
+  if (amount !== undefined && currency !== undefined) {
+    try {
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount,
+        currency,
+        payment_method_types: ['card'],
       })
-      if (paymentIntent !== null) {
+      if (paymentIntent !== undefined) {
         res.status(200).json({ paymentIntent })
-      } else {
-        res.status(400).json({ msg: 'error from payment confirmation' })
       }
-    } else {
-      req.status(400).json({ msg: 'error null payment Intent' })
+    } catch (error) {
+      res.status(400).json({ msg: `error from client secret: ${error}` })
     }
   } else {
-    res.status(400).json({ msg: 'error body params is null' })
+    res.status(400).json({ msg: 'error from post stripe data' })
   }
 }
 module.exports = { postStripeData }
