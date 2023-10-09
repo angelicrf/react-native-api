@@ -5,6 +5,7 @@ const stripe = require('stripe')(
 
 const postStripeData = async (req, res) => {
   const { amount, currency } = req.body
+  console.log(amount, currency)
   if (amount !== undefined && currency !== undefined) {
     try {
       const paymentIntent = await stripe.paymentIntents.create({
@@ -13,6 +14,7 @@ const postStripeData = async (req, res) => {
         payment_method_types: ['card'],
       })
       if (paymentIntent !== undefined) {
+        console.log('insidepayment', paymentIntent.client_secret)
         res.status(200).json({ paymentIntent })
       }
     } catch (error) {
